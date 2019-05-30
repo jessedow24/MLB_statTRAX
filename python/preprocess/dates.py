@@ -7,6 +7,7 @@ class GetSchedule:
 
         self.season             = season
         self.current_season     = datetime.today().year
+        self.today              = datetime.today()
         self.mlb_dates          = None
         self.first_half_start   = None
         self.first_half_end     = None
@@ -33,11 +34,13 @@ class GetSchedule:
         self.allstar_break_days = list(_pd.date_range(start=start, end=stop).astype(str))
  
     def set_season_days_so_far(self):
-        today = datetime.today()
         start = datetime.strptime(self.first_half_start, '%Y-%m-%d')
-        season_days = list(_pd.date_range(start=start, end=today).astype(str))
+        if self.today <= datetime.strptime(self.second_half_end, '%Y-%m-%d'):
+            end = self.today
+        else: 
+            end = self.second_half_end
+        season_days = list(_pd.date_range(start=start, end=end).astype(str))
         self.season_days_so_far = [d for d in season_days if d not in self.allstar_break_days]
   
-    #@abstractmethod
     def get_season_days_so_far(self):
         return self.season_days_so_far
