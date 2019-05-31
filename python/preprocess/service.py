@@ -19,6 +19,7 @@ class RawBatterStats:
     def __init__(self, seasons=None):
         self.seasons = seasons
         self.raw_stats = _pd.DataFrame()
+        
     def set_raw_stats(self):
         if self.seasons:
             df_lst2 = []
@@ -27,11 +28,12 @@ class RawBatterStats:
                 season_days_so_far = dates.get_season_days_so_far()
                 df_lst2.append(get_raw_stats(season_days_so_far))
             df_lst2 = [df for sublist in df_lst2 for df in sublist]
-            self.raw_stats = _pd.concat(df_lst2)
+            self.raw_stats = _pd.concat(df_lst2, ignore_index=True)
         else: 
             dates = preprocess.get_mlb_dates()
             season_days_so_far = dates.get_season_days_so_far()
-            self.raw_stats = _pd.concat(get_raw_stats(season_days_so_far))
+            self.raw_stats = _pd.concat(get_raw_stats(season_days_so_far), ignore_index=True)
+
     def get_stats(self):
         return self.raw_stats 
 

@@ -24,10 +24,11 @@ def get_raw_batter_stats(year=None):
         obj.set_raw_stats()
         return obj.get_stats()
 
-def get_raw_stats(year=None):
+
+def get_batter_stats(year=None):
         read_obj = model.ReadData()
         read_obj.set_raw_stats_df()
-        read_obj.update_dates_in_raw_stats_df()
+        read_obj.update_raw_stats_df()
         save_obj = model.StoreData()
         save_obj.save(read_obj.get_raw_stats_df())
         return read_obj.get_raw_stats_df()
