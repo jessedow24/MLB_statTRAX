@@ -16,16 +16,18 @@ class StoreData:
             print('WARNING: If not using Windows or OSX, you must customize output path in Data class in preprocessing.data')
         self.path = self.data_dir+self.file_name+'.csv'
     def save(self, raw_stats_df):
-        raw_stats_df.to_csv(self.path)
+        raw_stats_df.to_csv(self.path, index=False)
 
 class ReadData:
     def __init__(self): 
         self.raw_stats_df = None
+        self.dates_we_dont_got = None
 
     def set_raw_stats_df(self):
         try:
             self.raw_stats_df = _pd.read_csv('../data/csv/raw_batter_stats.csv')
-            #print('Pulling batter data from existing file...')
+           # print('pulling csv')
+           # print(self.raw_stats_df.shape)
         except OSError:
             print('FIRST-TIME-USE INITIALIZE: pulling batter data from pybaseball api.  This will take several minutes...')
             self.raw_stats_df = preprocess.get_raw_batter_stats(year=preprocess.get_prior_years())
@@ -35,17 +37,21 @@ class ReadData:
         season_days_so_far = dates.get_season_days_so_far()
         dates_we_got = list(self.raw_stats_df.DATE.unique())
 
-        dates_we_dont_got = [d for d in season_days_so_far if d not in dates_we_got]
+        self.dates_we_dont_got = [d for d in season_days_so_far if d not in dates_we_got]
         weird_dates = ['2019-03-22', '2019-03-23', '2019-03-24', '2019-03-25'
             , '2019-03-26', '2019-03-27'] # Account for early Japanese series in '19
-        dates_we_dont_got = [d for d in dates_we_dont_got if d not in weird_dates]
+        self.dates_we_dont_got = [d for d in self.dates_we_dont_got if d not in weird_dates]
+        print('dates we dont got', self.dates_we_dont_got)
 
-
-        if len(dates_we_dont_got) > 0:
+        if len(self.dates_we_dont_got) > 0:
             print('Updating batter data to most recent date...')
-            print(dates_we_dont_got)
-            new_df = _pd.DataFrame(preprocess.service.get_raw_stats(dates_we_dont_got))
-            self.raw_stats_df = _pd.concat([self.raw_stats_df, new_df])
+            print( ' Adding stats from dates...')
+            print(self.dates_we_dont_got)
+            new_df = _pd.DataFrame(preprocess.service.get_raw_stats(self.dates_we_dont_got))
+            self.raw_stats_df = _pd.concat([self.raw_stats_df, new_df], ignore_index=True)
+            print('updated raw_stats_df in model.py')
+            print(self.raw_stats_df.shape)
+            #self.raw_stats_df.update(new_df, overwrite=False)
         else: 
             print('Batter data is current.')
 

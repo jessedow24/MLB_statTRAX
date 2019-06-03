@@ -13,7 +13,7 @@ def get_raw_stats(season_days_so_far):
                 df_lst.append(tmp_df)
             except:
                 continue
-        return df_lst
+        return _pd.concat(df_lst, ignore_index=True)
 
 class RawBatterStats:
     def __init__(self, seasons=None):
