@@ -3,8 +3,8 @@ Define and access a list of dates on which MLB games were played.
 Use these dates to query raw stats for each batter for each game.
 '''
 
-from preprocess import dates, service, model
-
+from preprocess import service, model
+'''
 def get_mlb_dates(year=None):
         obj = dates.GetSchedule(year)
         obj.set_prior_years()
@@ -30,6 +30,7 @@ def get_batter_stats(year=None):
         read_obj.update_raw_stats_df()
         save_obj = model.StoreData()
         save_obj.save(read_obj.get_raw_stats_df())
+'''
 
 read_obj = model.ReadData()
 read_obj.set_raw_stats_df()

@@ -1,8 +1,22 @@
-import preprocess
+from preprocess import dates, service
 import pandas as _pd
 import pybaseball as _pybaseball
 import os as _os
 
+
+def get_mlb_dates(year=None):
+        obj = dates.GetSchedule(year)
+        obj.set_prior_years()
+        obj.set_mlb_dates()
+        obj.set_endpoints()
+        obj.set_all_star_break_days()
+        obj.set_season_days_so_far()
+        return obj
+
+def get_prior_years():
+        obj = dates.GetSchedule()
+        obj.set_prior_years()
+        return obj.prior_years
 
 class StoreData:
     def __init__(self, file_name='raw_batter_stats'):
@@ -30,10 +44,12 @@ class ReadData:
            # print(self.raw_stats_df.shape)
         except OSError:
             print('FIRST-TIME-USE INITIALIZE: pulling batter data from pybaseball api.  This will take several minutes...')
-            self.raw_stats_df = preprocess.get_raw_batter_stats(year=preprocess.get_prior_years())
+            obj = service.RawBatterStats(seasons=get_prior_years())
+            obj.set_raw_stats()
+            self.raw_stats_df = obj.get_stats()
 
     def update_raw_stats_df(self):
-        dates = preprocess.get_mlb_dates()
+        dates = get_mlb_dates()
         season_days_so_far = dates.get_season_days_so_far()
         dates_we_got = list(self.raw_stats_df.DATE.unique())
 
@@ -47,7 +63,7 @@ class ReadData:
             print('Updating batter data to most recent date...')
             print( ' Adding stats from dates...')
             print(self.dates_we_dont_got)
-            new_df = _pd.DataFrame(preprocess.service.get_raw_stats(self.dates_we_dont_got))
+            new_df = _pd.DataFrame(service.get_raw_stats(self.dates_we_dont_got))
             self.raw_stats_df = _pd.concat([self.raw_stats_df, new_df], ignore_index=True)
             print('updated raw_stats_df in model.py')
             print(self.raw_stats_df.shape)
