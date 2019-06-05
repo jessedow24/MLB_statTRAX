@@ -18,14 +18,6 @@ def get_prior_years():
         obj.set_prior_years()
         return obj.prior_years
 
-def count_total_days_for_pct(seasons):
-    lst = []
-    for season in seasons:
-        dates = get_mlb_dates(season)
-        lst.append(dates.get_season_days_so_far())
-    flat_lst = [item for sublist in lst for item in sublist]
-    return len(flat_lst)
-
 class StoreData:
     def __init__(self, file_name='raw_batter_stats'):
         self.file_name = file_name
@@ -47,15 +39,13 @@ class ReadData:
 
     def set_raw_stats_df(self):
         try:
-            print('TRIGGER A')
+            
             self.raw_stats_df = _pd.read_csv('../data/csv/raw_batter_stats.csv')
-           # print('pulling csv')
-           # print(self.raw_stats_df.shape)
+
         except OSError:
-            print('TRIGGER A')
-            print('FIRST-TIME-USE INITIALIZE: pulling batter data from pybaseball api.  This will take several minutes...')
+        
+            print('FIRST-TIME-USE INITIALIZE: pulling batter data from pybaseball api.  Upon completion, data will be stored for next time.')
             seasons=get_prior_years()
-            print(seasons)
             obj = service.RawBatterStats(seasons=get_prior_years())
             obj.set_raw_stats()
             self.raw_stats_df = obj.get_stats()
@@ -74,7 +64,7 @@ class ReadData:
             print('Updating batter data to most recent date...')
             print( ' Adding stats from dates...')
             print(self.dates_we_dont_got)
-            new_df = _pd.DataFrame(service.get_raw_stats(self.dates_we_dont_got))
+            new_df = _pd.DataFrame(service.get_raw_stats(self.dates_we_dont_got), len(self.dates_we_dont_got))
             self.raw_stats_df = _pd.concat([self.raw_stats_df, new_df], ignore_index=True)
             print('updated raw_stats_df in model.py')
             print(self.raw_stats_df.shape)
