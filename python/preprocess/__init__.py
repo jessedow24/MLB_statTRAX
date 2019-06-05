@@ -32,6 +32,7 @@ def get_batter_stats(year=None):
         save_obj.save(read_obj.get_raw_stats_df())
 '''
 
+
 read_obj = model.ReadData()
 read_obj.set_raw_stats_df()
 read_obj.update_raw_stats_df()

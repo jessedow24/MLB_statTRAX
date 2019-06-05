@@ -40,15 +40,17 @@ class ReadData:
     def set_raw_stats_df(self):
         try:
             
-            self.raw_stats_df = _pd.read_csv('../data/csv/raw_batter_stats.csv')
+            self.raw_stats_df = _pd.read_csv('../data/csv/raw_batter_stats.csv') # Needs to be updated to use self.path
 
         except OSError:
+        #except:
         
-            print('FIRST-TIME-USE INITIALIZE: pulling batter data from pybaseball api.  Upon completion, data will be stored for next time.')
-            seasons=get_prior_years()
-            obj = service.RawBatterStats(seasons=get_prior_years())
+            #print('FIRST-TIME-USE INITIALIZE: compiling batter data using pybaseball.')
+            #seasons=get_prior_years()
+            obj = service.RawBatterStats(seasons=[2016,2019])#(seasons=get_prior_years())
             obj.set_raw_stats()
             self.raw_stats_df = obj.get_stats()
+
 
     def update_raw_stats_df(self):
         dates = get_mlb_dates()
@@ -65,6 +67,7 @@ class ReadData:
             print( ' Adding stats from dates...')
             print(self.dates_we_dont_got)
             new_df = _pd.DataFrame(service.get_raw_stats(self.dates_we_dont_got), len(self.dates_we_dont_got))
+            print('new_df shape:', new_df.shape)
             self.raw_stats_df = _pd.concat([self.raw_stats_df, new_df], ignore_index=True)
             print('updated raw_stats_df in model.py')
             print(self.raw_stats_df.shape)
