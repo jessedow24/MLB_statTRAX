@@ -47,7 +47,7 @@ class ReadData:
         
             #print('FIRST-TIME-USE INITIALIZE: compiling batter data using pybaseball.')
             #seasons=get_prior_years()
-            obj = service.RawBatterStats(seasons=[2016,2019])#(seasons=get_prior_years())
+            obj = service.RawBatterStats(seasons=get_prior_years())
             obj.set_raw_stats()
             self.raw_stats_df = obj.get_stats()
 
@@ -66,7 +66,7 @@ class ReadData:
             print('Updating batter data to most recent date...')
             print( ' Adding stats from dates...')
             print(self.dates_we_dont_got)
-            new_df = _pd.DataFrame(service.get_raw_stats(self.dates_we_dont_got), len(self.dates_we_dont_got))
+            new_df = _pd.DataFrame(service.get_raw_stats(self.dates_we_dont_got), len(self.dates_we_dont_got), t=0)
             print('new_df shape:', new_df.shape)
             self.raw_stats_df = _pd.concat([self.raw_stats_df, new_df], ignore_index=True)
             print('updated raw_stats_df in model.py')
@@ -76,7 +76,7 @@ class ReadData:
             print('Batter data is current.')
 
         self.raw_stats_df.drop_duplicates(inplace=True)
-        self.raw_stats_df.sort_values('DATE', inplace=True)
+        self.raw_stats_df.sort_values('DATE', ascending=False, inplace=True)
 
     def get_raw_stats_df(self):
         return self.raw_stats_df

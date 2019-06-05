@@ -29,8 +29,8 @@ def get_raw_stats(season_days_so_far, len_days, ct):
                 tmp_df = _pybaseball.batting_stats_range(str(d), )
                 tmp_df['DATE'] = d
                 pct_complete = int(round(ct/len_days * 100, 0))
-                print('FIRST-TIME-USE INITIALIZE')
-                print('processing... ', d)
+                print('FIRST-TIME-USE INITIALIZATION')
+                print('Compiling... ', d)
                 print("{}%".format(pct_complete))
                 clear_output(wait=True)
                 df_lst.append(tmp_df)

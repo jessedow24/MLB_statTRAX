@@ -21,7 +21,7 @@ class GetSchedule:
         for i in range(1, 5):
             dt = self.current_season - i
             dt_lst.append(dt)
-            dt_lst.reverse() 
+            dt_lst.sort() 
         self.prior_years = dt_lst
 
     def set_mlb_dates(self):
