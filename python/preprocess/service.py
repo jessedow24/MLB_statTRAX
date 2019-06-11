@@ -23,13 +23,11 @@ def get_raw_stats(season_days_so_far, len_days, ct):
         df_lst = []
         for i in range(len(season_days_so_far)):
             ct += 1
-            #print(ct, len_days)
             d = season_days_so_far[i]
             try:
                 tmp_df = _pybaseball.batting_stats_range(str(d), )
                 tmp_df['DATE'] = d
                 pct_complete = int(round(ct/len_days * 100, 0))
-                print('FIRST-TIME-USE INITIALIZATION')
                 print('Compiling... ', d)
                 print("{}%".format(pct_complete))
                 clear_output(wait=True)
@@ -37,11 +35,9 @@ def get_raw_stats(season_days_so_far, len_days, ct):
             except IndexError:
                 continue
         return df_lst, ct
-
 def count_total_days_for_pct(seasons):
     lst = []
     for season in seasons:
-        
         date_obj = get_mlb_dates(season)
         lst.append(date_obj.get_season_days_so_far())
     flat_lst = [item for sublist in lst for item in sublist]
@@ -50,10 +46,8 @@ def count_total_days_for_pct(seasons):
 class RawBatterStats:
     def __init__(self, seasons=None):
         self.seasons = seasons
-        self.raw_stats = None#_pd.DataFrame()
+        self.raw_stats = None
         self.len_days = count_total_days_for_pct(self.seasons)
-
-
     def set_raw_stats(self):
         if self.seasons:
             df_lst2 = []
@@ -71,9 +65,6 @@ class RawBatterStats:
             season_days_so_far = date_obj.get_season_days_so_far()
             lst, ct = get_raw_stats(season_days_so_far, len(season_days_so_far), ct)
             self.raw_stats, ct = _pd.concat(lst, ignore_index=True)
-
-
-
     def get_stats(self):
         return self.raw_stats 
 

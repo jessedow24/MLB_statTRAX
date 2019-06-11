@@ -3,7 +3,6 @@ import pandas as _pd
 import pybaseball as _pybaseball
 import os as _os
 
-
 def get_mlb_dates(year=None):
         obj = dates.GetSchedule(year)
         obj.set_prior_years()
@@ -12,7 +11,6 @@ def get_mlb_dates(year=None):
         obj.set_all_star_break_days()
         obj.set_season_days_so_far()
         return obj
-
 def get_prior_years():
         obj = dates.GetSchedule()
         obj.set_prior_years()
@@ -36,53 +34,32 @@ class ReadData:
     def __init__(self): 
         self.raw_stats_df = None
         self.dates_we_dont_got = None
-
     def set_raw_stats_df(self):
         try:
-            
             self.raw_stats_df = _pd.read_csv('../data/csv/raw_batter_stats.csv') # Needs to be updated to use self.path
-
         except OSError:
-        #except:
-        
-            #print('FIRST-TIME-USE INITIALIZE: compiling batter data using pybaseball.')
-            #seasons=get_prior_years()
+            print('FIRST-TIME-USE INITIALIZE: compiling batter data using pybaseball.')
             obj = service.RawBatterStats(seasons=get_prior_years())
             obj.set_raw_stats()
             self.raw_stats_df = obj.get_stats()
-
-
     def update_raw_stats_df(self):
         dates = get_mlb_dates()
         season_days_so_far = dates.get_season_days_so_far()
         dates_we_got = list(self.raw_stats_df.DATE.unique())
-
         self.dates_we_dont_got = [d for d in season_days_so_far if d not in dates_we_got]
         weird_dates = ['2019-03-22', '2019-03-23', '2019-03-24', '2019-03-25'
             , '2019-03-26', '2019-03-27'] # Account for early Japanese series in '19
         self.dates_we_dont_got = [d for d in self.dates_we_dont_got if d not in weird_dates]
-
         if len(self.dates_we_dont_got) > 0:
-            print('Updating batter data to most recent date...')
-            print( ' Adding stats from dates...')
-            print(self.dates_we_dont_got)
-            new_df = _pd.DataFrame(service.get_raw_stats(self.dates_we_dont_got), len(self.dates_we_dont_got), t=0)
-            print('new_df shape:', new_df.shape)
+            print('UPDATING...')
+            print('Adding stats from dates: ', self.dates_we_dont_got)
+            df_lst, ct = service.get_raw_stats(self.dates_we_dont_got, len(self.dates_we_dont_got), ct=0)
+            new_df = _pd.concat(df_lst, ignore_index=True)
             self.raw_stats_df = _pd.concat([self.raw_stats_df, new_df], ignore_index=True)
-            print('updated raw_stats_df in model.py')
-            print(self.raw_stats_df.shape)
-            #self.raw_stats_df.update(new_df, overwrite=False)
+            self.raw_stats_df.update(new_df, overwrite=False)
         else: 
             print('Batter data is current.')
-
         self.raw_stats_df.drop_duplicates(inplace=True)
         self.raw_stats_df.sort_values('DATE', ascending=False, inplace=True)
-
     def get_raw_stats_df(self):
         return self.raw_stats_df
-
-
-
-    # pull new data for missing dates
-    # pull existing raw_stats_df
-    # Concat, drop duplicates, and sort
