@@ -1,10 +1,12 @@
 import pandas as _pd
+from datetime import datetime as _dt
 
 
 class RawBatter():
     def __init__(self, raw_batter_df):
         self.raw_batter = raw_batter_df
-        self.DATE  = self.raw_batter.DATE
+        self.DATE  = raw_batter_df.DATE.apply(lambda x: _dt.strptime(x, '%Y-%m-%d'))
+        self.YEAR  = self.DATE.apply(lambda x: x.year)
         self.NAME  = self.raw_batter.Name
         self.AGE   = self.raw_batter.Age
         self.TEAM  = self.raw_batter.Tm
@@ -35,7 +37,8 @@ class RawBatter():
         
     def process_batter(self):
         self.processed_batter = _pd.DataFrame({
-            'DATE' : self.raw_batter.DATE
+             'YEAR' : self.YEAR 
+            , 'DATE' : self.DATE
             , 'NAME' : self.NAME
             , 'AGE' : self.AGE
             , 'TEAM' : self.TEAM
@@ -62,5 +65,6 @@ class RawBatter():
             , 'SLG_1GM' : self.SLG
             , 'OPS_1GM' : self.OPS
         })
+
     def get_processed_batter(self):
         return self.processed_batter

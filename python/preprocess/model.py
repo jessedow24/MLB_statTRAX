@@ -29,14 +29,18 @@ class StoreData:
         self.path = self.data_dir+self.file_name+'.csv'
     def save(self, raw_stats_df):
         raw_stats_df.to_csv(self.path, index=False)
+    def get_path(self):
+        return self.path
 
 class ReadData:
-    def __init__(self): 
+    def __init__(self, path): 
         self.raw_stats_df = None
         self.dates_we_dont_got = None
+        self.path = path
     def set_raw_stats_df(self):
         try:
-            self.raw_stats_df = _pd.read_csv('../data/csv/raw_batter_stats.csv') # Needs to be updated to use self.path
+            self.raw_stats_df = _pd.read_csv(self.path)
+            #self.raw_stats_df = _pd.read_csv('../data/csv/raw_batter_stats.csv')
         except OSError:
             print('FIRST-TIME-USE INITIALIZE: compiling batter data using pybaseball.')
             obj = service.RawBatterStats(seasons=get_prior_years())
