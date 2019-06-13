@@ -15,6 +15,7 @@ class RawBatter():
         self.AB    = self.raw_batter.AB
         self.R     = self.raw_batter.R
         self.H     = self.raw_batter.H
+        self.singl = self.raw_batter.H - (self.raw_batter['2B'] + self.raw_batter['3B'] + self.raw_batter['HR'])
         self.doubl = self.raw_batter['2B']
         self.tripl = self.raw_batter['3B']
         self.HR    = self.raw_batter.HR
@@ -47,6 +48,7 @@ class RawBatter():
             , 'AB' : self.AB
             , 'R' : self.R
             , 'H' : self.H
+            , 'TB' : self.singl + (2*self.doubl) + (3*self.tripl) + (4*self.HR)
             , '2B' : self.doubl
             , '3B' : self.tripl
             , 'HR' : self.HR
