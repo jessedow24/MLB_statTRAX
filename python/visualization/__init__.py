@@ -61,7 +61,7 @@ def show_stat_graph(df, stat, name, year):
            , plot_height = 600
           )
     
-    p.line(x, day7, legend=stat+": 7-day moving avg.", line_width=3, color="coral")
+    p.line(x, day7, legend=stat+": 7-day total.", line_width=3, color="coral")
     #p.line(x, seas, legend=stat+": season", line_width=2, color="teal", alpha=.4)
     
     show(p)
