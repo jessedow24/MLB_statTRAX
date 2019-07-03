@@ -1,5 +1,6 @@
 import pandas as _pd
 from datetime import datetime as _dt
+from preprocess import model
 
 
 class RawBatter():
@@ -115,5 +116,8 @@ class CleanBatter:
         self.output['ROLLING_SLG'] = (self.output.TB_7DAYROLL / self.output.AB_7DAYROLL)
         self.output['ROLLING_OPS'] = self.output.ROLLING_OBP + self.output.ROLLING_SLG
         self.output['ROLLING_BAVG'] = self.output.H_7DAYROLL / self.output.AB_7DAYROLL
+    def save_output(self):
+        save_obj = model.StoreData('pivoted_batter_stats')
+        save_obj.save(self.output)
     def get_output(self):
         return self.output
