@@ -56,13 +56,13 @@ class ReadData:
         self.dates_we_dont_got = [d for d in season_days_so_far if d not in self.dates_we_got]
         self.dates_we_dont_got = [d for d in self.dates_we_dont_got if d not in weird_dates]
     def update_raw_stats_df(self):
-        dates = get_mlb_dates()
-        season_days_so_far = dates.get_season_days_so_far()
-        dates_we_got = list(self.raw_stats_df.DATE.unique())
-        self.dates_we_dont_got = [d for d in season_days_so_far if d not in dates_we_got]
-        weird_dates = ['2019-03-22', '2019-03-23', '2019-03-24', '2019-03-25'
-            , '2019-03-26', '2019-03-27'] # Account for early Japanese series in '19
-        self.dates_we_dont_got = [d for d in self.dates_we_dont_got if d not in weird_dates]
+        #dates = get_mlb_dates()
+        #season_days_so_far = dates.get_season_days_so_far()
+        #dates_we_got = list(self.raw_stats_df.DATE.unique())
+        #self.dates_we_dont_got = [d for d in season_days_so_far if d not in dates_we_got]
+        #weird_dates = ['2019-03-22', '2019-03-23', '2019-03-24', '2019-03-25'
+        #    , '2019-03-26', '2019-03-27'] # Account for early Japanese series in '19
+        #self.dates_we_dont_got = [d for d in self.dates_we_dont_got if d not in weird_dates]
         if len(self.dates_we_dont_got) > 0:
             print('UPDATING...')
             print('Adding stats from dates: ', self.dates_we_dont_got)
